@@ -1,0 +1,327 @@
+/* ------------------------------------------------------
+* PAGE WIDE
+*/
+html,
+body {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+}
+
+/* ------------------------------------------------------
+* COLORS
+*/
+.bg {
+  background: linear-gradient(135deg,#4a148c, #7b1fa2);
+}
+
+
+.bg-yellow {
+  background: #ffe220;
+}
+
+.bg-purple {
+  background: #8244cb;
+}
+
+.bg-purple-lin-grad {
+  background: linear-gradient(135deg, #8244cb,#6a32ac);
+}
+
+.bg-dark-blue {
+  background: #0675d7;
+}
+
+.bg-blue {
+  background: #11c9e9;
+}
+
+.text-blue {
+  color: #11c9e9;
+  color: #0675d7;
+}
+
+.bg-blue-lin-grad {
+  background: linear-gradient(135deg, #11c9e9, #0675d7);
+}
+
+.bg-teal-lin-grad {
+  background: linear-gradient(135deg, #34e9d1, #38ecb6);
+}
+
+.bg-teal {
+  background: #3de6c0;
+}
+
+.bg-light-green {
+  background: #2ac774;
+}
+
+.bg-green {
+  background: #1f9e5b;
+}
+
+.bg-yellow-green {
+  background: #ade735;
+}
+
+.bg-orange-yellow {
+  background: #fe9d0a;
+}
+
+.bg-orange {
+  background: #fd7310;
+}
+
+.bg-orange-lin-grad {
+  background: linear-gradient(135deg,#fe9d0a, #fd7310);
+}
+
+.bg-pink {
+  background: #fa749f;
+}
+
+.bg-red {
+  background: #fc5255;
+}
+
+.bg-red-lin-grad {
+  background: linear-gradient(135deg, #fa749f, #fc5255);
+}
+
+.bg-white {
+  background: #f5f5f5;
+}
+
+.bg-gray {
+  background: #93a1a1;
+}
+
+.bg-gray-lin-grad {
+  background: linear-gradient(135deg, #f5f5f5, #93a1a1);
+}
+
+.bg-dark {
+  background: #292929;
+}
+
+.bg-brown {
+  background: #39260c;
+}
+
+.bg-cream {
+  background: #f6e0ac;
+}
+
+.bg-green-lin-grad {
+  background: linear-gradient(135deg, #38CD9D,#0f9a6d);
+}
+
+/* ------------------------------------------------------
+* TYPOGRAPHY
+*/
+.font-thin {
+  font-weight: 100;
+}
+
+.font-regular {
+  font-weight: 300;
+}
+
+.font-bold {
+  font-weight: 600;
+}
+
+.text-white {
+  color: white;
+}
+
+/* ------------------------------------------------------
+* SIZING
+*/
+.h-20 {
+  height: 20vh;
+}
+
+.h-30 {
+  height: 30vh;
+}
+
+.h-40 {
+  height: 40vh;
+}
+
+.h-50 {
+  height: 50vh;
+}
+
+.h-70 {
+  height: 70vh;
+}
+
+.h-80 {
+  height: 80vh;
+}
+
+.h-100 {
+  min-height: 100vh;
+}
+
+/* ------------------------------------------------------
+* HEADING
+*/
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border-bottom: 0.5rem solid #880e4f; */
+}
+
+.page-title {
+  color: #292929;
+  text-shadow: 0 .3rem .2rem rgb(59, 59, 59);
+  font-size: 6rem;
+}
+
+/* ------------------------------------------------------
+* SCORE BOARD
+*/
+.score-board,
+.frame-row,
+.frame,
+.sub-frame-box,
+.sub-frame {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  background: transparent;
+  color: #11c9e9;
+  font-size: 1.125rem;
+  text-shadow: 0 0.1rem 0.1rem rgba(0,0,0,0.5);
+}
+
+.score-board,
+.frame {
+  border: .1rem solid #292929;
+}
+
+.sub-frame:nth-child(2),
+.sub-frame:nth-child(3) {
+}
+.sub-frame {
+  border-left: .2rem solid #292929;
+  border-bottom: .2rem solid #292929
+}
+
+.score-board {
+  width: 55.3rem;
+  margin: auto;
+  margin-bottom: 3rem;
+  background: linear-gradient(135deg, #A5A5A5, #333);
+}
+
+.frame {
+  width: 5.51rem;
+  height: 5rem;
+  padding: 0;
+  flex-direction: column;
+}
+
+.bottom-frame {
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
+.sub-frame-box {
+  align-self: flex-end;
+  justify-self: flex-start;
+}
+
+.sub-frame {
+  width: 1.7rem;
+  height : 1.7rem;
+}
+
+/* ------------------------------------------------------
+* BUTTON PANEL
+*/
+.button-panel,
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.button-panel {
+  /* flex-direction: column; */
+  min-width: 15rem;
+  height: 10rem;
+}
+
+.btn {
+  font-size: 1.125rem;
+  font-weight: 300;
+  color: #292929;
+  padding: 0.5rem;
+  padding-top: 0.25rem;
+  border-radius: .3rem;
+  box-shadow: 0 0.5rem 2rem rgba(29,29,29,.5);
+}
+
+.btn:active {
+  outline: none;
+  text-shadow: 0 0.05rem 0.05rem rgba(59, 59, 59,0.7);
+  box-shadow: inset 0 0.2rem 0.2rem rgba(29,29,29,0.7);
+}
+
+.reset-btn,
+.go-back-btn {
+  color: #292929;
+  border: 1.25px solid #292929;
+  background: transparent;
+}
+
+
+.reset-btn:hover,
+.go-back-btn:hover {
+  color: #ddd;
+  border: 1.25px solid #ddd;
+}
+
+/* ------------------------------------------------------
+* KEY PAD
+*/
+.keypad,
+.pad-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.keypad {
+  width: 12.3rem;
+  margin: auto;
+}
+
+.pad-box {
+  width: 3rem;
+  height: 3rem;
+  background: #11c9e9;
+  color: #292929;
+  font-size: 1.5rem;
+  border: .1rem solid #333;
+  box-shadow: inset 0 0.1rem 0.8rem rgba(0,0,0,1);
+  margin: 0.125rem;
+  cursor: pointer;
+}
+
+.pad-box:hover {
+  color: #f5f5f5;
+}
+
+.pad-box:active {
+  box-shadow: inset 0 0.5rem .8rem rgba(22, 22, 22, 1);
+  text-shadow: 0 .1rem .1rem rgba(0,0,0,0.3);
+}
