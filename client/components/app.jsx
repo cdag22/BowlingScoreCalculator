@@ -12,13 +12,17 @@ class App extends React.Component {
       totals: [],
       subFrames: [],
       subMappings: [],
-      waitTimes: [],
+      // waitTimes: [],
       total: 0,
       currentFrameTotal: 0,
       totalIndex: 1,
       isEndOfFrame: false,
       isGameOver: false,
     };
+
+    this.OUT_OF_BOUND = 100;
+    this.STRIKE = 2;
+    this.ONE = 1
 
     this.updateScore = this.updateScore.bind(this);
   }
@@ -29,102 +33,68 @@ class App extends React.Component {
   }
 
   calculateBoundIndex(subMappings, k, boundIndex) {
-    let OUT_OF_BOUND = 100;
-    let STRIKE = 2;
-    let ONE = 1
-    // console.log('INSIDE --- k==>', k);
-
     if (subMappings[k] === 'X') {
       if (!subMappings[k + 2] || (!subMappings[k + 4] && subMappings[k + 2] === 'X')) {
-        boundIndex += OUT_OF_BOUND;
+        boundIndex += this.OUT_OF_BOUND;
       }
       if (subMappings[k + 2] === 'X') {
-        // console.log('STRIKE')
-        boundIndex += STRIKE;
+        boundIndex += this.STRIKE;
         if (subMappings[k + 4] === 'X') {
-          // console.log('DOUBLE STRIKE');
-          boundIndex += STRIKE;
+          boundIndex += this.STRIKE;
         }
       } else {
-        console.log('NOTHING');
         boundIndex += 1;
-        // console.log(boundIndex, 'NOTHING AFTER');
       }
     } else if (subMappings[k] === '/') {
       if (subMappings[k + 1] === '-') {
-        console.log("STRIKE")
-        boundIndex += STRIKE;
+        boundIndex += this.STRIKE;
       } else {
-        // console.log("NOT STRIKE");
-        boundIndex += ONE;
-        // console.log('boundIndex', boundIndex);
+        boundIndex += this.ONE;
       }
     }
     return boundIndex;
   }
 
   updateTotal(score) {
-    let { totals, subFrames, subMappings, waitTimes, total, currentFrameTotal, totalIndex } = this.state;
+    let {
+      totals,
+      subFrames,
+      subMappings,
+      // waitTimes,
+      total,
+      currentFrameTotal,
+      totalIndex
+    } = this.state;
     let k = totalIndex;
-    let waitTime = waitTimes[Math.floor(k / 2)];
+    // let waitTime = waitTimes[Math.floor(k / 2)];
     let boundIndex = this.calculateBoundIndex(subMappings, k, totalIndex);
-    let STRIKE = 2;
-    let ONE = 1;
-    let lastBoundIndex = boundIndex;
 
-    while (waitTime >= 0 && subFrames[boundIndex] >= 0) {
-      console.log(boundIndex, 'bound index');
-      console.log(subFrames[boundIndex], 'item');
-      console.log(k, 'k');
-      console.log('top')
-      console.log('-----------------');
+    while (subFrames[boundIndex] >= 0) {
       if ((/[\/X]/).test(subMappings[k])) {
         total += subFrames[k - 1] + subFrames[k];
-        if (boundIndex === STRIKE + STRIKE + k) {
-          console.log('-----IF-----')
+        if (boundIndex === this.STRIKE + this.STRIKE + k) {
           total += subFrames[boundIndex];
           boundIndex -= 2;
           total += subFrames[boundIndex];
-        } else if (boundIndex === STRIKE + ONE + k) {
-          console.log('-----ELSE IF-----')
-          // debugger;
-          // console.log(subFrames[boundIndex], 'item', boundIndex, 'bound index');
+        } else if (boundIndex === this.STRIKE + this.ONE + k) {
           total += subFrames[boundIndex];
           boundIndex -= 1;
-          // console.log(subFrames[boundIndex], 'item', boundIndex, 'bound index');
           total += subFrames[boundIndex];
         } else {
-          console.log('-----ELSE-----')
-          console.log(boundIndex, subFrames);
           total += subFrames[boundIndex];
-          console.log(total);
           if (subMappings[boundIndex - 1] !== '/' && subMappings[boundIndex + 1]) {
-            console.log('YES');
             boundIndex += 1;
             total += subFrames[boundIndex];
           }
         }
-        // console.log(boundIndex, 'bound index');
-        // console.log(k, 'k');
-        // console.log('-----------------');
       } else {
-        console.log('----END----')
         total += currentFrameTotal + score;
         currentFrameTotal = 0;
       }
       totals.push(total);
       k += 2;
-      waitTime = waitTimes[Math.floor(k / 2)];
+      // waitTime = waitTimes[Math.floor(k / 2)];
       boundIndex = this.calculateBoundIndex(subMappings, k, k);
-      lastBoundIndex = boundIndex;
-      // console.log(boundIndex, 'bound index');
-      // console.log(subFrames[boundIndex], 'item');
-      // console.log(k, 'k');
-      // console.log('-----------------');
-      // console.log('***************');
-      // console.log(total);
-      // console.log('***************');
-
     }
 
     this.setState({
@@ -138,7 +108,7 @@ class App extends React.Component {
     let {
       subFrames,
       subMappings,
-      waitTimes,
+      // waitTimes,
       currentFrameTotal,
       isEndOfFrame,
     } = this.state;
@@ -154,7 +124,7 @@ class App extends React.Component {
 
     // add waitTime for Frame and reset currentFrameTotal if end of frame
     if ((isEndOfFrame || mapping === 'X') && subFrames.length < 20) {
-      waitTimes.push(waitCount);
+      // waitTimes.push(waitCount);
 
       // if not end of frame increment currentFrameTotal by score
     }
@@ -165,7 +135,7 @@ class App extends React.Component {
     this.setState({
       subFrames: subFrames,
       subMappings: subMappings,
-      waitTimes: waitTimes,
+      // // waitTimes: waitTimes,
       currentFrameTotal: currentFrameTotal,
       isEndOfFrame: subFrames.length < 21 && mapping !== 'X' ? !isEndOfFrame : isEndOfFrame,
     }, () => this.updateTotal(score));
@@ -195,7 +165,7 @@ class App extends React.Component {
         </header>
         <div className="">
           <ScoreBoard
-            subFrames={this.state.subFrames}
+            subFrames={this.state.subMappings}
             totals={this.state.totals}
           />
           <div className="m-auto d-flex justify-content-between col-6">
