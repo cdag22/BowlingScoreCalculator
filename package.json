@@ -4,7 +4,7 @@
   "description": "a bowling score display and calculator",
   "main": "server/server.js",
   "scripts": {
-    "start": "node",
+    "start": "webpack; node server/server.js",
     "start:dev": "nodemon",
     "watch": "webpack --watch",
     "dev": "NODE_ENV=development webpack-dev-server",
