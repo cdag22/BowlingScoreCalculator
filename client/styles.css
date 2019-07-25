@@ -338,3 +338,14 @@ button:focus,
   box-shadow: inset 0 0.5rem .8rem rgba(22, 22, 22, 1);
   text-shadow: 0 .1rem .1rem rgba(0,0,0,0.3);
 }
+
+div .disabled {
+  pointer-events: none;
+  background: #292929;
+  color: #292929;
+  border: 1.25px solid #292929;
+}
+
+div .disabled:hover {
+  color: #292929;
+}

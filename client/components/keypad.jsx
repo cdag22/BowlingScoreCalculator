@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 
-const KeyPad = ({ updateScore }) => {
+const KeyPad = ({ updateScore, currentFrameTotal }) => {
 
   return (
     <div className="keypad">
@@ -9,7 +9,7 @@ const KeyPad = ({ updateScore }) => {
         <div
           key={i}
           data-value={i}
-          className="pad-box"
+          className={10 - currentFrameTotal < i ? 'pad-box disabled' : 'pad-box'}
           onClick={(e) => (e.preventDefault(), updateScore(e.target.dataset.value))}
         >
           {i}

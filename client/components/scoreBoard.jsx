@@ -13,19 +13,19 @@ const ScoreBoard = ({ totals, subFrames }) => {
           i < 9 ? (
             <div key={i} className="frame bottom-frame">
               <div className="sub-frame-box">
-                <div className="sub-frame">{subFrames[i * 2] ? subFrames[i * 2] : '-'}</div>
-                <div className="sub-frame">{subFrames[i * 2 + 1] ? subFrames[i * 2 + 1] : '-'}</div>
+                <div className="sub-frame">{range.includes(subFrames[i * 2]) ? subFrames[i * 2] : '-'}</div>
+                <div className="sub-frame">{range.includes(subFrames[i * 2 + 1]) ? subFrames[i * 2 + 1] : '-'}</div>
               </div>
-              <div>{totals[i] ? totals[i] : '-'}</div>
+              <div>{(/[0-9]+/).test(totals[i]) ? totals[i] : '-'}</div>
             </div>
           )
             :
             (
               <div key={i} className="frame bottom-frame">
                 <div className="sub-frame-box">
-                  <div className="sub-frame">{subFrames[i * 2] ? subFrames[i * 2] : '-'}</div>
-                  <div className="sub-frame">{subFrames[i * 2 + 1] ? subFrames[i * 2 + 1] : '-'}</div>
-                  <div className="sub-frame">{subFrames[i * 2 + 2] ? subFrames[i * 2 + 2] : '-'}</div>
+                  <div className="sub-frame">{range.includes(subFrames[i * 2]) ? subFrames[i * 2] : '-'}</div>
+                  <div className="sub-frame">{range.includes(subFrames[i * 2 + 1]) ? subFrames[i * 2 + 1] : '-'}</div>
+                  <div className="sub-frame">{range.includes(subFrames[i * 2 + 2]) ? subFrames[i * 2 + 2] : '-'}</div>
                 </div>
                 <div>{'-'}</div>
               </div>

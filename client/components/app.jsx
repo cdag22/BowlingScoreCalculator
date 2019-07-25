@@ -12,8 +12,8 @@ class App extends React.Component {
       totals: [],
       subFrames: [],
       subMappings: [],
-      // waitTimes: [],
       total: 0,
+      carryOverFrameScore: 0,
       currentFrameTotal: 0,
       totalIndex: 1,
       isEndOfFrame: false,
@@ -25,16 +25,31 @@ class App extends React.Component {
     this.ONE = 1
 
     this.updateScore = this.updateScore.bind(this);
+    this.resetBoard = this.resetBoard.bind(this);
   }
 
-  determineIsGameOver(score) {
-    const { isGameOver, totalIndex } = this.state;
-    return isGameOver || (Math.floor(totalIndex / 2) === 10 && isEndOfFrame && (score !== '/' || score !== 'X'))
+  resetBoard() {
+    this.setState({
+      totals: [],
+      subFrames: [],
+      subMappings: [],
+      total: 0,
+      carryOverFrameScore: 0,
+      currentFrameTotal: 0,
+      totalIndex: 1,
+      isEndOfFrame: false,
+      isGameOver: false,
+    });
+  }
+
+  determineIsGameOver() {
+    const { isGameOver, subMappings } = this.state;
+    return isGameOver || subMappings.length === 21 || (subMappings.length === 20 && subMappings[19] !== '/' && subMappings[18] !== 'X')
   }
 
   calculateBoundIndex(subMappings, k, boundIndex) {
     if (subMappings[k] === 'X') {
-      if (!subMappings[k + 2] || (!subMappings[k + 4] && subMappings[k + 2] === 'X')) {
+      if (subMappings.length < 21 && (!subMappings[k + 2] || (!subMappings[k + 4] && subMappings[k + 2] === 'X'))) {
         boundIndex += this.OUT_OF_BOUND;
       }
       if (subMappings[k + 2] === 'X') {
@@ -60,16 +75,14 @@ class App extends React.Component {
       totals,
       subFrames,
       subMappings,
-      // waitTimes,
       total,
-      currentFrameTotal,
+      carryOverFrameScore,
       totalIndex
     } = this.state;
     let k = totalIndex;
-    // let waitTime = waitTimes[Math.floor(k / 2)];
     let boundIndex = this.calculateBoundIndex(subMappings, k, totalIndex);
 
-    while (subFrames[boundIndex] >= 0) {
+    while (subFrames[boundIndex] >= 0 && totals.length < 10) {
       if ((/[\/X]/).test(subMappings[k])) {
         total += subFrames[k - 1] + subFrames[k];
         if (boundIndex === this.STRIKE + this.STRIKE + k) {
@@ -88,18 +101,18 @@ class App extends React.Component {
           }
         }
       } else {
-        total += currentFrameTotal + score;
-        currentFrameTotal = 0;
+        total += carryOverFrameScore + score;
+        carryOverFrameScore = 0;
       }
       totals.push(total);
       k += 2;
-      // waitTime = waitTimes[Math.floor(k / 2)];
       boundIndex = this.calculateBoundIndex(subMappings, k, k);
     }
 
     this.setState({
       totals: totals,
       total: total,
+      carryOverFrameScore: carryOverFrameScore,
       totalIndex: k,
     });
   }
@@ -108,35 +121,30 @@ class App extends React.Component {
     let {
       subFrames,
       subMappings,
-      // waitTimes,
+      carryOverFrameScore,
       currentFrameTotal,
       isEndOfFrame,
     } = this.state;
 
-    let waitCount = mapping === '/' ? 1 : mapping === 'X' ? 2 : 0;
-
-    if (mapping === 'X') {
+    if (mapping === 'X' && subFrames.length < 18) {
       subFrames.push(0);
       subMappings.push('-');
     }
     subFrames.push(score);
     subMappings.push(mapping);
 
-    // add waitTime for Frame and reset currentFrameTotal if end of frame
-    if ((isEndOfFrame || mapping === 'X') && subFrames.length < 20) {
-      // waitTimes.push(waitCount);
-
-      // if not end of frame increment currentFrameTotal by score
-    }
     if (!isEndOfFrame || mapping === 'X') {
-      currentFrameTotal = mapping === 'X' ? 0 : score;
+      carryOverFrameScore = mapping === 'X' ? 0 : score;
+      currentFrameTotal = carryOverFrameScore;
+    } else {
+      currentFrameTotal = 0;
     }
 
     this.setState({
       subFrames: subFrames,
       subMappings: subMappings,
-      // // waitTimes: waitTimes,
       currentFrameTotal: currentFrameTotal,
+      carryOverFrameScore: carryOverFrameScore,
       isEndOfFrame: subFrames.length < 21 && mapping !== 'X' ? !isEndOfFrame : isEndOfFrame,
     }, () => this.updateTotal(score));
 
@@ -147,7 +155,7 @@ class App extends React.Component {
     const { currentFrameTotal, isEndOfFrame, isGameOver } = this.state;
     let mapping = isEndOfFrame && currentFrameTotal + score === 10 ? '/' : score === 10 ? 'X' : score;
 
-    if (!this.determineIsGameOver(mapping)) {
+    if (!this.determineIsGameOver()) {
       this.updateFrameScore(score, mapping);
     } else if (!isGameOver) {
       this.setState({
@@ -171,8 +179,10 @@ class App extends React.Component {
           <div className="m-auto d-flex justify-content-between col-6">
             <KeyPad
               updateScore={this.updateScore}
+              currentFrameTotal={this.state.currentFrameTotal}
             />
             <ButtonPanel
+              resetBoard={this.resetBoard}
             />
           </div>
         </div>
