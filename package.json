@@ -2,7 +2,7 @@
   "name": "bowlingscorecalculator",
   "version": "1.0.0",
   "description": "a bowling score display and calculator",
-  "main": "server/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "webpack; node server/index.js",
     "start:dev": "nodemon",
