@@ -27,7 +27,7 @@ const ScoreBoard = ({ totals, subFrames }) => {
                   <div className="sub-frame">{range.includes(subFrames[i * 2 + 1]) ? subFrames[i * 2 + 1] : '-'}</div>
                   <div className="sub-frame">{range.includes(subFrames[i * 2 + 2]) ? subFrames[i * 2 + 2] : '-'}</div>
                 </div>
-                <div>{'-'}</div>
+                <div>{(/[0-9]+/).test(totals[i]) ? totals[i] : '-'}</div>
               </div>
             )
         )}

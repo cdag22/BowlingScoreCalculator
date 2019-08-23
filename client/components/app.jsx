@@ -8,6 +8,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
+    // State
+    // 
     this.state = {
       totals: [],
       subFrames: [],
@@ -20,14 +22,22 @@ class App extends React.Component {
       isGameOver: false,
     };
 
+    // Magic Numbers
+    // 
     this.OUT_OF_BOUND = 100;
-    this.STRIKE = 2;
+    this.MAX_SUB_FRAME_LENGTH = 21;
+    this.FIRST_NINE_SUB_FRAMES_LENGTH = 18;
+    this.MAX_TOTALS_LENGTH = 10;
+    this.DOUBLE_STRIKE = 4;
+    this.SINGLE_STRIKE = 2;
     this.ONE = 1
 
     this.updateScore = this.updateScore.bind(this);
     this.resetBoard = this.resetBoard.bind(this);
   }
 
+  // Reset state click handler
+  // 
   resetBoard() {
     this.setState({
       totals: [],
@@ -44,25 +54,29 @@ class App extends React.Component {
 
   determineIsGameOver() {
     const { isGameOver, subMappings } = this.state;
-    return isGameOver || subMappings.length === 21 || (subMappings.length === 20 && subMappings[19] !== '/' && subMappings[18] !== 'X')
+    return isGameOver || subMappings.length === this.MAX_SUB_FRAME_LENGTH || (subMappings.length === 20 && subMappings[19] !== '/' && subMappings[18] !== 'X')
   }
 
-  calculateBoundIndex(subMappings, k, boundIndex) {
+  // Determines what the max lookhead index (boundIndex) should be for checking subFrames values in updateTotal
+  // 
+  calculateBoundIndex(subMappings, boundIndex) {
+    const k = boundIndex;
     if (subMappings[k] === 'X') {
-      if (subMappings.length < 21 && (!subMappings[k + 2] || (!subMappings[k + 4] && subMappings[k + 2] === 'X'))) {
+      if (subMappings.length < this.MAX_SUB_FRAME_LENGTH &&
+        (!subMappings[k + this.SINGLE_STRIKE] || (!subMappings[k + this.DOUBLE_STRIKE] && subMappings[k + this.SINGLE_STRIKE] === 'X'))) {
         boundIndex += this.OUT_OF_BOUND;
       }
-      if (subMappings[k + 2] === 'X') {
-        boundIndex += this.STRIKE;
-        if (subMappings[k + 4] === 'X') {
-          boundIndex += this.STRIKE;
+      if (subMappings[k + this.SINGLE_STRIKE] === 'X') {
+        boundIndex += this.SINGLE_STRIKE;
+        if (subMappings[k + this.DOUBLE_STRIKE] === 'X') {
+          boundIndex += this.SINGLE_STRIKE;
         }
       } else {
-        boundIndex += 1;
+        boundIndex += this.ONE;
       }
     } else if (subMappings[k] === '/') {
-      if (subMappings[k + 1] === '-') {
-        boundIndex += this.STRIKE;
+      if (subMappings[k + this.ONE] === '-') {
+        boundIndex += this.SINGLE_STRIKE;
       } else {
         boundIndex += this.ONE;
       }
@@ -70,6 +84,9 @@ class App extends React.Component {
     return boundIndex;
   }
 
+  // Runs a while loop to add new total value for Frame and appends it to totals
+  // Calls calculateBoundIndex
+  // 
   updateTotal(score) {
     let {
       totals,
@@ -80,23 +97,23 @@ class App extends React.Component {
       totalIndex
     } = this.state;
     let k = totalIndex;
-    let boundIndex = this.calculateBoundIndex(subMappings, k, totalIndex);
+    let boundIndex = this.calculateBoundIndex(subMappings, totalIndex);
 
-    while (subFrames[boundIndex] >= 0 && totals.length < 10) {
+    while (subFrames[boundIndex] >= 0 && totals.length < this.MAX_TOTALS_LENGTH) {
       if ((/[\/X]/).test(subMappings[k])) {
         total += subFrames[k - 1] + subFrames[k];
-        if (boundIndex === this.STRIKE + this.STRIKE + k) {
+        if (boundIndex === this.SINGLE_STRIKE + this.SINGLE_STRIKE + k) {
           total += subFrames[boundIndex];
-          boundIndex -= 2;
+          boundIndex -= this.SINGLE_STRIKE;
           total += subFrames[boundIndex];
-        } else if (boundIndex === this.STRIKE + this.ONE + k) {
+        } else if (boundIndex === this.SINGLE_STRIKE + this.ONE + k) {
           total += subFrames[boundIndex];
-          boundIndex -= 1;
+          boundIndex -= this.ONE;
           total += subFrames[boundIndex];
         } else {
           total += subFrames[boundIndex];
           if (subMappings[boundIndex - 1] !== '/' && subMappings[boundIndex + 1]) {
-            boundIndex += 1;
+            boundIndex += this.ONE;
             total += subFrames[boundIndex];
           }
         }
@@ -105,7 +122,7 @@ class App extends React.Component {
         carryOverFrameScore = 0;
       }
       totals.push(total);
-      k += 2;
+      k += this.SINGLE_STRIKE;
       boundIndex = this.calculateBoundIndex(subMappings, k, k);
     }
 
@@ -117,6 +134,9 @@ class App extends React.Component {
     });
   }
 
+  // Updates subFrame and subMapping values
+  // Calls updateTotal after state update
+  // 
   updateFrameScore(score, mapping) {
     let {
       subFrames,
@@ -126,7 +146,7 @@ class App extends React.Component {
       isEndOfFrame,
     } = this.state;
 
-    if (mapping === 'X' && subFrames.length < 18) {
+    if (mapping === 'X' && subFrames.length < this.FIRST_NINE_SUB_FRAMES_LENGTH) {
       subFrames.push(0);
       subMappings.push('-');
     }
@@ -145,15 +165,20 @@ class App extends React.Component {
       subMappings: subMappings,
       currentFrameTotal: currentFrameTotal,
       carryOverFrameScore: carryOverFrameScore,
-      isEndOfFrame: subFrames.length < 21 && mapping !== 'X' ? !isEndOfFrame : isEndOfFrame,
+      isEndOfFrame: subFrames.length < this.MAX_SUB_FRAME_LENGTH && mapping !== 'X' ? !isEndOfFrame : isEndOfFrame,
     }, () => this.updateTotal(score));
 
   }
 
+  // MAIN FUNCTION
+  // Run each time a new value is selected from the keypad
+  // Calls update updateFrameScore => updateTotal if NOT isGameOver by running determineIsGameOver
+  // Only updates subFrames / totals if isGameOver is False
+  // 
   updateScore(score) {
     score = +score;
     const { currentFrameTotal, isEndOfFrame, isGameOver } = this.state;
-    let mapping = isEndOfFrame && currentFrameTotal + score === 10 ? '/' : score === 10 ? 'X' : score;
+    let mapping = isEndOfFrame && currentFrameTotal + score === this.MAX_TOTALS_LENGTH ? '/' : score === this.MAX_TOTALS_LENGTH ? 'X' : score;
 
     if (!this.determineIsGameOver()) {
       this.updateFrameScore(score, mapping);
@@ -167,7 +192,7 @@ class App extends React.Component {
   render() {
 
     return (
-      <div className="bg-blue shadow h-100">
+      <div className="bg-blue h-100">
         <header className="h-30 header">
           <h1 className="font-regular page-title">Bowling Score</h1>
         </header>

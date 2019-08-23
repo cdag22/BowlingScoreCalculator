@@ -1,5 +1,3 @@
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path');
 const SRC = path.join(__dirname, 'client', 'index.jsx');
 const BUILD = path.join(__dirname, 'build');
@@ -8,7 +6,7 @@ const BUILD = path.join(__dirname, 'build');
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
-    main: SRC,
+    client: SRC,
   },
   output: {
     path: BUILD,
@@ -24,15 +22,10 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          // MiniCssExtractPlugin.loader,
           'style-loader',
           'css-loader',
         ],
       },
     ],
   },
-  plugins: [
-    // new MiniCssExtractPlugin(),
-    // new HtmlWebpackPlugin(),
-  ],
 };
